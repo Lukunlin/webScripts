@@ -9,12 +9,36 @@
 // ==/UserScript==
 (function() {
     'use strict';
-    
-    console.warn('正在进行自动清理定时器中...')
+
+    // 进行清理掉超时自动暂停视频
+    console.warn('正在进行自动清理定时器中...');
     setInterval(() => {
-        var _silence = window.silence || {}
-        clearTimeout(_silence.timer)
-        clearInterval(_silence.timer)
-        console.log(_silence, 'Silence value', _silence.timer)
-    }, (1000 * 60 * 1))
+        var _silence = window.silence || {};
+        clearTimeout(_silence.timer);
+        clearInterval(_silence.timer);
+        console.log(_silence, 'Silence value', _silence.timer);
+    }, (1000 * 60 * 1));
+
+    // 对页面布局进行修改
+    var findCount = 0;
+    var getMainBox = function(callback) {
+        var mainBox = document.getElementById('ipcs_list_box');
+        console.log(mainBox, 123);
+        if(mainBox) {
+            callback && callback(mainBox);
+        }
+        else {
+            setTimeout(function() {
+                findCount++;
+                if(findCount < 100) {
+                    getMainBox(callback);
+                }
+            }, 1000);
+        }
+    }
+    window.onload = function(){
+        getMainBox(function(dom) {
+            dom.style.width = 'auto';
+        })
+    }
 })();
